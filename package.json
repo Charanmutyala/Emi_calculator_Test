@@ -1,0 +1,17 @@
+{
+  "name": "emi-calculator-test",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright + Cucumber framework for EMI calculator assessment",
+  "scripts": {
+    "test:ui": "cucumber-js --require-module dotenv/config --require \"src/support/**/*.js\" --require \"src/step-definitions/**/*.js\" --format progress --format html:reports/cucumber-report.html features/**/*.feature",
+    "test:api": "cucumber-js --require-module dotenv/config --require \"src/support/**/*.js\" --require \"src/step-definitions/**/*.js\" --tags @api --format progress features/**/*.feature",
+    "test": "npm run test:ui && npm run test:api"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^10.0.0",
+    "@playwright/test": "^1.53.0",
+    "dotenv": "^16.4.0",
+    "playwright": "^1.53.0"
+  }
+}
