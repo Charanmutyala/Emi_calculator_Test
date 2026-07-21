@@ -65,6 +65,12 @@ These are designed to validate the robustness of the automation itself:
 1. Send a GET request to the JSONPlaceholder /posts endpoint.
 2. Validate the response status code is 200.
 3. Validate the response contains expected data such as post id 1.
+4. Send a POST request with invalid payload data including:
+   - an excessively long title
+   - unsupported special characters
+   - a missing userId field
+5. Validate that the API does not return a server-side failure.
+6. Validate that the response returns either an error message or a created resource payload with an acceptable status code such as 201, 400, or 422.
 
 ## Test case scenarios covered
 
@@ -75,6 +81,18 @@ These are designed to validate the robustness of the automation itself:
 - Successful page load and tab navigation
 - Successful chart rendering and validation
 - Successful API response validation
+- Successful API validation for valid GET /posts request
+
+### Negative / robustness scenarios
+- Invalid POST payload with an excessively long title
+- Invalid POST payload with unsupported special characters
+- Invalid POST payload missing userId
+- Validation that the API does not return a server-side failure
+- Validation that the response returns an appropriate error or validation-style response
+- Locators that are intentionally brittle are documented and kept as examples for self-healing
+- Validation ensures the framework does not depend only on fragile positional selectors
+- Timeout handling is included to avoid premature failures in slow UI actions
+- The framework is structured so that selector issues can be detected and improved without rewriting the whole test suite
 
 ### Negative / robustness scenarios
 - Locators that are intentionally brittle are documented and kept as examples for self-healing
@@ -98,6 +116,8 @@ These are designed to validate the robustness of the automation itself:
 ### API tests
 - Validate external API integration behavior
 - Check HTTP status and response content
+- Validate boundary and invalid input handling during POST requests
+- Ensure invalid payloads are handled gracefully without server-side failure
 
 ### Stability and locator resilience tests
 - Encourage the use of resilient selectors

@@ -20,3 +20,10 @@ Feature: EMI Calculator validations
     Given I call the JSONPlaceholder API endpoint "/posts"
     Then the API response status should be 200
     And the API response body should contain a post with id 1
+
+  @api
+  Scenario: Validate boundary and invalid data handling for post creation
+    Given I create a post with an excessively long title, unsupported special characters, and missing userId
+    Then the API response should not be a server-side failure
+    And the API response status should be one of 201, 400, or 422
+    And the API response should contain either an error message or a created resource payload

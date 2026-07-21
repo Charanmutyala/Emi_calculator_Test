@@ -111,8 +111,35 @@ Given('I call the JSONPlaceholder API endpoint {string}', async function (endpoi
   this.apiResponse = response;
 });
 
+Given('I create a post with an excessively long title, unsupported special characters, and missing userId', async function () {
+  const baseApiUrl = process.env.JSONPLACEHOLDER_URL || 'https://jsonplaceholder.typicode.com';
+  this.apiContext = await require('playwright').request.newContext();
+  const payload = {
+    title: `${'A'.repeat(3000)} <script>alert('x')</script>`,
+    body: 'Invalid payload with special characters: < > & " \''
+  };
+  this.apiResponse = await this.apiContext.post(`${baseApiUrl}/posts`, { data: payload });
+});
+
 Then('the API response status should be {int}', async function (status) {
   expect(this.apiResponse.status()).toBe(status);
+});
+
+Then('the API response status should be one of {int}, {int}, or {int}', async function (first, second, third) {
+  const status = this.apiResponse.status();
+  expect([first, second, third]).toContain(status);
+});
+
+Then('the API response should not be a server-side failure', async function () {
+  expect(this.apiResponse.status()).not.toBe(500);
+});
+
+Then('the API response should contain either an error message or a created resource payload', async function () {
+  const body = await this.apiResponse.json();
+  const responseText = JSON.stringify(body);
+  const hasValidationMessage = /error|invalid|required|bad request|unprocessable/i.test(responseText);
+  const isCreatedResource = typeof body === 'object' && body !== null && Object.keys(body).length > 0;
+  expect(hasValidationMessage || isCreatedResource).toBeTruthy();
 });
 
 Then('the API response body should contain a post with id {int}', async function (id) {
